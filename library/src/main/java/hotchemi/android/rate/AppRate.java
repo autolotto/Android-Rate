@@ -2,16 +2,20 @@ package hotchemi.android.rate;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 
 import java.util.Date;
 
 import static hotchemi.android.rate.DialogManager.create;
+import static hotchemi.android.rate.IntentHelper.createIntentForAmazonAppstore;
+import static hotchemi.android.rate.IntentHelper.createIntentForGooglePlay;
 import static hotchemi.android.rate.PreferenceHelper.getInstallDate;
 import static hotchemi.android.rate.PreferenceHelper.getIsAgreeShowDialog;
 import static hotchemi.android.rate.PreferenceHelper.getLaunchTimes;
 import static hotchemi.android.rate.PreferenceHelper.getRemindInterval;
 import static hotchemi.android.rate.PreferenceHelper.isFirstLaunch;
+import static hotchemi.android.rate.PreferenceHelper.setAgreeShowDialog;
 import static hotchemi.android.rate.PreferenceHelper.setInstallDate;
 
 public final class AppRate {
@@ -184,6 +188,17 @@ public final class AppRate {
         if (!activity.isFinishing()) {
             create(activity, options).show();
         }
+    }
+
+    public boolean getRateIsAgreeShowDialog() {
+        return getIsAgreeShowDialog(context);
+    }
+
+    public void rateApp(Activity activity) {
+        final Intent intentToAppstore = options.getStoreType() == StoreType.GOOGLEPLAY ?
+                createIntentForGooglePlay(activity) : createIntentForAmazonAppstore(activity);
+        activity.startActivity(intentToAppstore);
+        setAgreeShowDialog(false);
     }
 
     public boolean shouldShowRateDialog() {
